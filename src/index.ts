@@ -1,6 +1,40 @@
 import * as _ from 'lodash'
 import {Payload, Node, Chain, HelperNode} from './types'
 
+function chainOps(chain:Chain) {
+  const first = ():Node => <Node>_.first(_.values(chain))
+
+  const pid    = (id:string):string => chain[id].prev
+  const nid    = (id:string):string => chain[id].next
+  const pvid   = (id:string):string => chain[id].PV
+  const nvid   = (id:string):string => chain[id].NV
+  const hid    = (id:string):string => !pid(id)  ? id : hid(pvid(id) || pid(id)) 
+  const rlevel = (id:string):number => chain[id].rlevel
+
+  const head   = ():string => first() ? hid(first().id) : null
+
+  const ids    = (id:string):string[] => !id ? [] : [id,...ids(nid(id))]
+  const level  = (id:string):number   => !id ? 0 : rlevel(id) + level(pvid(id) || pid(id))
+
+  return {
+    head, ids, level, pvid, nvid, pid, nid
+  }
+}
+
+export function dump(chain:Chain):string {
+  let COPS = chainOps(chain)
+  const ids = COPS.ids(COPS.head())
+  let stackSize = 0
+  return ids.map((id:string) => {
+    const level = COPS.level(id)
+    let str = _.repeat('.', level) + id
+    if(!COPS.pvid(id) && !!COPS.pid(id)) { str = '(' + str; stackSize++ }
+    if(!COPS.nvid(id) && !!COPS.nid(id) && stackSize > 0) { str = str + ')'; stackSize-- }
+    return str
+  }).join('') + _.repeat(')', stackSize)
+
+} 
+
 function matchToNode(match:string):HelperNode {
   const [,P1,dots,id,P2] = /^(\(?)(\.*)([a-zA-Z0-9]+)(\)?)$/.exec(match)
   const P = <Payload>{id}

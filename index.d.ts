@@ -23,5 +23,6 @@ declare module "@trystal/data-gen" {
         isTail?:boolean
     }
 
-    export function buildChain(nodeSpec:string):Chain 
+    export function buildChain(nodeSpec:string):Chain
+    export function dump(chain:Chain):string 
 }

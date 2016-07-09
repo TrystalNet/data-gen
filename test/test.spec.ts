@@ -1,11 +1,19 @@
-import {buildChain} from '../src/index'
+import {buildChain,dump} from '../src/index'
 
 const A = 'A', B = 'B', C = 'C', D = 'D', E = 'E'
 
+describe('Dump tests:',() => {
+  const testCases = [
+    'A',
+    'A.B',
+    'A(.B)',
+    'A.B(...C).D'    
+  ]
+  testCases.forEach(TC => it(TC, () => expect(dump(buildChain(TC))).toEqual(TC)))
+})
+
 describe('Build Chain Tests: ', () => {
-  it('builds empty chain', () => {
-    expect(buildChain('')).toEqual({})
-  })
+  it('builds empty chain', () => expect(dump(buildChain(''))).toEqual(''))
   it('builds [A]', () => {
     expect(buildChain('A')).toEqual({ 
       A: { id: 'A', prev: <string>null, next: <string>null, rlevel: 0, payload: { id: 'A' } } 

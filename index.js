@@ -1,5 +1,39 @@
 "use strict";
 var _ = require('lodash');
+function chainOps(chain) {
+    var first = function () { return _.first(_.values(chain)); };
+    var pid = function (id) { return chain[id].prev; };
+    var nid = function (id) { return chain[id].next; };
+    var pvid = function (id) { return chain[id].PV; };
+    var nvid = function (id) { return chain[id].NV; };
+    var hid = function (id) { return !pid(id) ? id : hid(pvid(id) || pid(id)); };
+    var rlevel = function (id) { return chain[id].rlevel; };
+    var head = function () { return first() ? hid(first().id) : null; };
+    var ids = function (id) { return !id ? [] : [id].concat(ids(nid(id))); };
+    var level = function (id) { return !id ? 0 : rlevel(id) + level(pvid(id) || pid(id)); };
+    return {
+        head: head, ids: ids, level: level, pvid: pvid, nvid: nvid, pid: pid, nid: nid
+    };
+}
+function dump(chain) {
+    var COPS = chainOps(chain);
+    var ids = COPS.ids(COPS.head());
+    var stackSize = 0;
+    return ids.map(function (id) {
+        var level = COPS.level(id);
+        var str = _.repeat('.', level) + id;
+        if (!COPS.pvid(id) && !!COPS.pid(id)) {
+            str = '(' + str;
+            stackSize++;
+        }
+        if (!COPS.nvid(id) && !!COPS.nid(id) && stackSize > 0) {
+            str = str + ')';
+            stackSize--;
+        }
+        return str;
+    }).join('') + _.repeat(')', stackSize);
+}
+exports.dump = dump;
 function matchToNode(match) {
     var _a = /^(\(?)(\.*)([a-zA-Z0-9]+)(\)?)$/.exec(match), P1 = _a[1], dots = _a[2], id = _a[3], P2 = _a[4];
     var P = { id: id };

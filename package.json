@@ -1,6 +1,6 @@
 {
   "name": "@trystal/data-gen",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Data generator, primarily for use in testing Trystal applications",
   "homepage": "https://github.com/trystalnet/trist#readme",
   "author": "Terence O'Neill <terry.oneill@trystal.net>",
