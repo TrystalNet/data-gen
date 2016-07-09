@@ -3,7 +3,7 @@ var _ = require('lodash');
 function matchToNode(match) {
     var _a = /^(\(?)(\.*)([a-zA-Z0-9]+)(\)?)$/.exec(match), P1 = _a[1], dots = _a[2], id = _a[3], P2 = _a[4];
     var P = { id: id };
-    var node = { id: id, level: dots.length, payload: { id: 'ketchups' } };
+    var node = { id: id, level: dots.length, payload: { id: id } };
     if (P1 === '(')
         node.isHead = true;
     if (P2 === ')')
@@ -41,6 +41,11 @@ function addRLevels(helperNodes, chain) {
             item.rlevel = item.level - chain[item.prev].level;
         else
             item.rlevel = item.level;
+    });
+    helperNodes.forEach(function (item) {
+        delete item.level;
+        delete item.isHead;
+        delete item.isTail;
     });
 }
 function buildChain(nodeSpec) {
