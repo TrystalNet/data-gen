@@ -1,4 +1,4 @@
-declare module "data-gen" {
+declare module "@trystal/data-gen" {
     export interface Payload {
         id:string
     }
