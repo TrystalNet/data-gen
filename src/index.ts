@@ -85,7 +85,7 @@ export function buildChain(nodeSpec:string):Chain {
   if(_.isEmpty(nodeSpec)) return {}
 
   let helperNodes = nodeSpec
-    .match(/(\(?\.*[A-Z]\)?)/ig)
+    .match(/(\(?\.*[A-Z][0-9]*\)?)/ig)
     .map(M => matchToNode(M))
 
   const ids = helperNodes.map(item => item.id)

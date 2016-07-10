@@ -7,9 +7,17 @@ describe('Dump tests:',() => {
     'A',
     'A.B',
     'A(.B)',
-    'A.B(...C).D'    
+    'A.B(...C).D'
   ]
   testCases.forEach(TC => it(TC, () => expect(dump(buildChain(TC))).toEqual(TC)))
+  it('builds a chain with a two character line id', () => {
+    const chain = buildChain('W1')
+    expect(_.keys(chain)).toEqual(["W1"])
+  })
+  it('dumps a chain with a two character line id', () => {
+    const chain = buildChain('W1')
+    expect(dump(chain)).toEqual('W1')
+  })
 })
 
 describe('Build Chain Tests: ', () => {

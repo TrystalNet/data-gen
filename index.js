@@ -86,7 +86,7 @@ function buildChain(nodeSpec) {
     if (_.isEmpty(nodeSpec))
         return {};
     var helperNodes = nodeSpec
-        .match(/(\(?\.*[A-Z]\)?)/ig)
+        .match(/(\(?\.*[A-Z][0-9]*\)?)/ig)
         .map(function (M) { return matchToNode(M); });
     var ids = helperNodes.map(function (item) { return item.id; });
     helperNodes.forEach(function (item, index) { item.prev = (index > 0) ? ids[index - 1] : null; });
