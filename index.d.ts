@@ -1,10 +1,12 @@
 declare module "@trystal/data-gen" {
     export interface Payload {
-        id:string
+        id: string
+        format?: string
+        trystup?: string
     }
 
     export interface Node {
-        id:string,
+        id:string
         prev?: string
         next?: string
         PV?: string

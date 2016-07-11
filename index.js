@@ -36,8 +36,8 @@ function dump(chain) {
 exports.dump = dump;
 function matchToNode(match) {
     var _a = /^(\(?)(\.*)([a-zA-Z0-9]+)(\)?)$/.exec(match), P1 = _a[1], dots = _a[2], id = _a[3], P2 = _a[4];
-    var P = { id: id };
-    var node = { id: id, level: dots.length, payload: { id: id } };
+    var payload = { id: id, trystup: id };
+    var node = { id: id, level: dots.length, payload: payload };
     if (P1 === '(')
         node.isHead = true;
     if (P2 === ')')

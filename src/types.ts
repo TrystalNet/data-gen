@@ -1,5 +1,7 @@
 export interface Payload {
   id:string
+  format?: string
+  trystup?: string
 }
 
 export interface Node {

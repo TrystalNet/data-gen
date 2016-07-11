@@ -37,8 +37,8 @@ export function dump(chain:Chain):string {
 
 function matchToNode(match:string):HelperNode {
   const [,P1,dots,id,P2] = /^(\(?)(\.*)([a-zA-Z0-9]+)(\)?)$/.exec(match)
-  const P = <Payload>{id}
-  const node:HelperNode = {id, level:dots.length, payload:{id}}
+  const payload = <Payload>{id, trystup:id}
+  const node:HelperNode = {id, level:dots.length, payload}
   if(P1 === '(') node.isHead = true
   if(P2 === ')') node.isTail = true
   return node
@@ -96,8 +96,6 @@ export function buildChain(nodeSpec:string):Chain {
   const chain = convertToChain(helperNodes)
   addNV(helperNodes, chain)
   addRLevels(helperNodes, chain)
-
-
 
   return chain
 }
