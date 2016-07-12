@@ -1,5 +1,8 @@
 import * as _ from 'lodash'
-import {Payload, Node, Chain, HelperNode} from './types'
+import {Chain, Node, Payload} from '@trystal/interfaces'
+import {HelperNode} from './types'
+
+
 
 function chainOps(chain:Chain) {
   const first = ():Node => <Node>_.first(_.values(chain))
