@@ -37,7 +37,7 @@
     "test": "test"
   },
   "dependencies": {
-    "@trystal/interfaces": "^1.0.0",
+    "@trystal/interfaces": "^1.6.1",
     "@types/lodash": "^4.0.21-alpha",
     "lodash": "^4.13.1"
   }
