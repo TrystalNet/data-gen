@@ -8,6 +8,6 @@ declare module "@trystal/data-gen" {
         isTail?:boolean
     }
 
-    export function buildChain(nodeSpec:string):IMM.Chain
-    export function dump(chain:IMM.Chain):string 
+    export function buildChain(nodeSpec:string):JS.Chain
+    export function dump(chain:JS.Chain):string 
 }
