@@ -1,9 +1,5 @@
 import * as _ from 'lodash'
-import {JS} from '@trystal/interfaces'
-
-import Chain = JS.Chain
-import Node = JS.Node
-import Payload = JS.Payload
+import {Node, Chain, Payload} from '@trystal/interfaces'
 
 interface HelperNode extends Node {
   level?:number,
@@ -11,49 +7,50 @@ interface HelperNode extends Node {
   isTail?:boolean
 }
 
+type StringU = string | undefined
+type StringUN = string | undefined | null 
+
 function chainOps(chain:Chain) {
   const first = ():Node => <Node>_.first(_.values(chain))
 
-  const pid    = (id:string):string => chain[id].prev
-  const nid    = (id:string):string => chain[id].next
-  const pvid   = (id:string):string => chain[id].PV
-  const nvid   = (id:string):string => chain[id].NV
-  const hid    = (id:string):string => !pid(id)  ? id : hid(pvid(id) || pid(id)) 
-  const rlevel = (id:string):number => chain[id].rlevel
+  const pid    = (id:string):StringU => chain[id].prev
+  const nid    = (id:string):StringU => chain[id].next
+  const pvid   = (id:string):StringU => chain[id].PV
+  const nvid   = (id:string):StringU => chain[id].NV
+  
+  function hid(id:string):string {
+    let nextId = pvid(id) || pid(id) 
+    if(!nextId) return id
+    return hid(nextId)
+  }
 
-  const head   = ():string => first() ? hid(first().id) : null
+  const rlevel = (id:string):number|undefined => chain[id].rlevel
 
-  const ids    = (id:string):string[] => !id ? [] : [id,...ids(nid(id))]
-  const level  = (id:string):number   => !id ? 0 : rlevel(id) + level(pvid(id) || pid(id))
+  const head   = ():StringUN => first() ? hid(first().id) : null
+  function ids(id:string):string[] {
+    const NID = nid(id)
+    if(!NID) return [id]
+    return [id,...ids(NID)] 
+  }
+  function level(id:string):number {
+    const nextId = pvid(id) || pid(id)
+    const RLEVEL = rlevel(id) || 0
+    if(!nextId) return RLEVEL 
+    return RLEVEL + level(nextId)
+  }
 
   return {
     head, ids, level, pvid, nvid, pid, nid
   }
 }
-
-export function dump(chain:Chain):string {
-  let COPS = chainOps(chain)
-  const ids = COPS.ids(COPS.head())
-  let stackSize = 0
-  return ids.map((id:string) => {
-    const level = COPS.level(id)
-    let str = _.repeat('.', level) + id
-    if(!COPS.pvid(id) && !!COPS.pid(id)) { str = '(' + str; stackSize++ }
-    if(!COPS.nvid(id) && !!COPS.nid(id) && stackSize > 0) { str = str + ')'; stackSize-- }
-    return str
-  }).join('') + _.repeat(')', stackSize)
-
-} 
-
 function matchToNode(match:string):HelperNode {
-  const [,P1,dots,id,P2] = /^(\(?)(\.*)([a-zA-Z0-9]+)(\)?)$/.exec(match)
+  const [,P1,dots,id,P2] = <string[]>/^(\(?)(\.*)([a-zA-Z0-9]+)(\)?)$/.exec(match)
   const payload = <Payload>{id, trystup:id}
   const node:HelperNode = {id, level:dots.length, payload}
   if(P1 === '(') node.isHead = true
   if(P2 === ')') node.isTail = true
   return node
 }
-
 function addPV(helperNodes:HelperNode[]):HelperNode[] {
   const stack = <HelperNode[]>[]
   helperNodes.forEach(hn => {
@@ -66,18 +63,15 @@ function addPV(helperNodes:HelperNode[]):HelperNode[] {
   })
   return helperNodes
 }
-
 function convertToChain(helperNodes:HelperNode[]):Chain {
   return helperNodes.reduce((acc, item) => {
     acc[item.id] = item 
     return acc 
   }, {})
 }
-
 function addNV(helperNodes:HelperNode[], chain:Chain) {
-  helperNodes.filter(HN => !!HN.PV).forEach(item => chain[item.PV].NV = item.id)
+  helperNodes.filter(HN => !!HN.PV).forEach(item => chain[item.PV!].NV = item.id)
 }
-
 function addRLevels(helperNodes:HelperNode[], chain:Chain) {
   helperNodes.forEach((item:HelperNode) => {
     if(item.PV) item.rlevel = item.level - (<HelperNode>chain[item.PV]).level
@@ -90,17 +84,13 @@ function addRLevels(helperNodes:HelperNode[], chain:Chain) {
     delete item.isTail
   })
 }
-
 export function buildChain(nodeSpec:string):Chain {
   if(_.isEmpty(nodeSpec)) return {}
 
-  let helperNodes = nodeSpec
-    .match(/(\(?\.*[A-Z][0-9]*\)?)/ig)
-    .map(M => matchToNode(M))
-
+  let helperNodes = (<string[]>nodeSpec.match(/(\(?\.*[A-Z][0-9]*\)?)/ig)).map(M => matchToNode(M)) 
   const ids = helperNodes.map(item => item.id)
-  helperNodes.forEach((item, index) => { item.prev = (index > 0) ? ids[index-1] : null })
-  helperNodes.forEach((item, index) => { item.next = (index < (helperNodes.length - 1)) ? ids[index+1]: null })
+  helperNodes.forEach((hn, index) => { hn.prev = (index > 0) ? ids[index-1] : undefined })
+  helperNodes.forEach((hn, index) => { hn.next = (index < (helperNodes.length - 1)) ? ids[index+1]: undefined })
   helperNodes = addPV(helperNodes)
 
   const chain = convertToChain(helperNodes)
@@ -109,3 +99,17 @@ export function buildChain(nodeSpec:string):Chain {
 
   return chain
 }
+export function dump(chain:Chain):string {
+  let COPS = chainOps(chain)
+  const H = COPS.head()
+  const ids = H ? COPS.ids(H) : []
+  let stackSize = 0
+  return ids.map((id:string) => {
+    const level = COPS.level(id)
+    let str = _.repeat('.', level) + id
+    if(!COPS.pvid(id) && !!COPS.pid(id)) { str = '(' + str; stackSize++ }
+    if(!COPS.nvid(id) && !!COPS.nid(id) && stackSize > 0) { str = str + ')'; stackSize-- }
+    return str
+  }).join('') + _.repeat(')', stackSize)
+
+} 

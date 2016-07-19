@@ -1,13 +1,10 @@
-declare module "@trystal/data-gen" {
-    import {IMM} from '@trystal/interfaces'
-    import {JS} from '@trystal/interfaces'
-    
-    export interface HelperNode extends JS.Node {
-        level?:number,
-        isHead?:boolean
-        isTail?:boolean
-    }
+import {Node,Chain} from '@trystal/interfaces'
 
-    export function buildChain(nodeSpec:string):JS.Chain
-    export function dump(chain:JS.Chain):string 
+export interface HelperNode extends Node {
+    level?:number,
+    isHead?:boolean
+    isTail?:boolean
 }
+
+export function buildChain(nodeSpec:string):Chain
+export function dump(chain:Chain):string 

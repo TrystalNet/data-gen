@@ -5,7 +5,7 @@
     "removeComments": true,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
-    "strictNullChecks": false, // recursion doesn't seem to work with this turned o, so leave it off
+    "strictNullChecks": true, // recursion doesn't seem to work with this turned o, so leave it off
     "declaration": false,
     "outDir": ".."
   }  ,
