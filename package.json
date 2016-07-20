@@ -1,6 +1,6 @@
 {
   "name": "@trystal/data-gen",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Data generator, primarily for use in testing Trystal applications",
   "homepage": "https://github.com/trystalnet/trist#readme",
   "author": "Terence O'Neill <terry.oneill@trystal.net>",
@@ -37,7 +37,7 @@
     "test": "test"
   },
   "dependencies": {
-    "@trystal/interfaces": "^3.0.0",
+    "@trystal/interfaces": "^3.0.2",
     "@types/lodash": "^4.0.21-alpha",
     "lodash": "^4.13.1"
   }
