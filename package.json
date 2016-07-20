@@ -1,6 +1,6 @@
 {
   "name": "@trystal/data-gen",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Data generator, primarily for use in testing Trystal applications",
   "homepage": "https://github.com/trystalnet/trist#readme",
   "author": "Terence O'Neill <terry.oneill@trystal.net>",
@@ -23,11 +23,10 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jasmine": "^2.2.27-alpha",
-    "@types/lodash": "^4.0.21-alpha",
     "jasmine-core": "^2.4.1",
     "source-map-loader": "^0.1.5",
     "ts-loader": "^0.8.2",
-    "typescript": "^1.9.0-dev.20160626-1.0"
+    "typescript": "^2.0.0"
   },
   "scripts": {
     "prod": "tsc -p tsconfig.json",
@@ -38,7 +37,8 @@
   },
   "dependencies": {
     "@trystal/interfaces": "^3.0.2",
-    "@types/lodash": "^4.0.21-alpha",
+    "@types/jasmine": "^2.2.30",
+    "@types/lodash": "0.0.28",
     "lodash": "^4.13.1"
   }
 }
