@@ -1,6 +1,6 @@
 {
   "name": "@trystal/data-gen",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Data generator, primarily for use in testing Trystal applications",
   "homepage": "https://github.com/trystalnet/trist#readme",
   "author": "Terence O'Neill <terry.oneill@trystal.net>",
@@ -8,11 +8,10 @@
   "keywords": [
     "trystal"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
   "types": [
     "lodash"
   ],
-  "typings": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/trystalnet/trist.git"
@@ -36,9 +35,9 @@
     "test": "test"
   },
   "dependencies": {
-    "@trystal/interfaces": "^3.0.2",
+    "@trystal/interfaces": "^3.0.5",
     "@types/jasmine": "^2.2.30",
     "@types/lodash": "0.0.28",
-    "lodash": "^4.13.1"
+    "lodash": "^4.14.0"
   }
 }
